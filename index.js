@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const dotenv = require('dotenv')
 const cors = require('cors')
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 dotenv.config()
 app.use(cors())
 app.use(express.json())
@@ -24,6 +24,9 @@ async function run() {
     const db = client.db('sports_management')
     const facilitiesCollection = db.collection('sportsFacilities')
 
+
+    //  ALL GET API STARTED
+
     app.get('/allFacilities',async(req,res)=>{
 
         const result = await facilitiesCollection.find().toArray()
@@ -31,6 +34,57 @@ async function run() {
     })
    
 
+    // get the signle product by id
+    app.get('/allFacilities/:id', async(req,res)=>{
+
+      const {id} = req.params
+
+        const result = await facilitiesCollection.findOne({_id: new ObjectId(id)})
+        res.json(result)
+    })
+   
+
+    //  ALL GET API END
+///------------------------------------------------------------------------
+
+    //  ALL POST API STARTED
+
+    app.get('/allFacilities',async(req,res)=>{
+
+        const result = await facilitiesCollection.find().toArray()
+        res.json(result)
+    })
+   
+
+    //  ALL POST API END
+///------------------------------------------------------------------------
+
+
+    //  ALL PATCH API STARTED
+
+    app.get('/allFacilities',async(req,res)=>{
+
+        const result = await facilitiesCollection.find().toArray()
+        res.json(result)
+    })
+   
+
+    //  ALL PATCH API END
+///------------------------------------------------------------------------
+
+
+
+    //  ALL DELETE API STARTED
+
+    app.get('/allFacilities',async(req,res)=>{
+
+        const result = await facilitiesCollection.find().toArray()
+        res.json(result)
+    })
+   
+
+    //  ALL DELETE API END
+///------------------------------------------------------------------------
 
 
 
