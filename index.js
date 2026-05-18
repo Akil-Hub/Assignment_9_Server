@@ -6,7 +6,7 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 dotenv.config()
 app.use(cors())
 app.use(express.json())
-const port = process.env.PORT || 7000
+const port = process.env.PORT || 8000
 const uri = process.env.MONGO_DB_URI
 const client = new MongoClient(uri, {
   serverApi: {
@@ -23,7 +23,23 @@ async function run() {
 
     const db = client.db('sports_management')
     const facilitiesCollection = db.collection('sportsFacilities')
+
+    app.get('/allFacilities',async(req,res)=>{
+
+        const result = await facilitiesCollection.find().toArray()
+        res.json(result)
+    })
    
+
+
+
+
+
+
+
+
+
+
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
