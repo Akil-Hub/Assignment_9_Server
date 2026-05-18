@@ -17,7 +17,7 @@ const client = new MongoClient(uri, {
 });
 async function run() {
   try {
-  
+
     await client.connect();
 
 
@@ -27,64 +27,79 @@ async function run() {
 
     //  ALL GET API STARTED
 
-    app.get('/allFacilities',async(req,res)=>{
+    app.get('/allFacilities', async (req, res) => {
 
-        const result = await facilitiesCollection.find().toArray()
-        res.json(result)
+      const result = await facilitiesCollection.find().toArray()
+      res.json(result)
     })
-   
+
 
     // get the signle product by id
-    app.get('/allFacilities/:id', async(req,res)=>{
+    app.get('/allFacilities/:id', async (req, res) => {
 
-      const {id} = req.params
+      const { id } = req.params
 
-        const result = await facilitiesCollection.findOne({_id: new ObjectId(id)})
-        res.json(result)
+      const result = await facilitiesCollection.findOne({ _id: new ObjectId(id) })
+      res.json(result)
     })
-   
+
 
     //  ALL GET API END
-///------------------------------------------------------------------------
+    ///------------------------------------------------------------------------
 
     //  ALL POST API STARTED
 
-    app.get('/allFacilities',async(req,res)=>{
+    app.post('/allFacilities', async (req, res) => {
 
-        const result = await facilitiesCollection.find().toArray()
-        res.json(result)
+      try {
+        const postData = req.body
+
+
+        const result = await facilitiesCollection.insertOne(postData)
+        res.status(201).json({
+          success: true,
+          message: 'Facility added successfully'
+        })
+      } catch (error) {
+        console.error("Insert facility error:", error);
+
+        res.status(500).json({
+          success: false,
+          message: "Internal server error",
+        });
+      }
     })
-   
+
 
     //  ALL POST API END
-///------------------------------------------------------------------------
+    ///------------------------------------------------------------------------
 
 
     //  ALL PATCH API STARTED
 
-    app.get('/allFacilities',async(req,res)=>{
+    app.get('/allFacilities', async (req, res) => {
 
-        const result = await facilitiesCollection.find().toArray()
-        res.json(result)
+      const result = await facilitiesCollection.find().toArray()
+      res.json(result)
     })
-   
+
 
     //  ALL PATCH API END
-///------------------------------------------------------------------------
+    ///------------------------------------------------------------------------
 
 
 
     //  ALL DELETE API STARTED
 
-    app.get('/allFacilities',async(req,res)=>{
+    app.get('/allFacilities', async (req, res) => {
 
-        const result = await facilitiesCollection.find().toArray()
-        res.json(result)
+      const result = await facilitiesCollection.find().toArray()
+      res.json(result)
     })
-   
+
 
     //  ALL DELETE API END
-///------------------------------------------------------------------------
+    ///------------------------------------------------------------------------
 
 
 
@@ -113,14 +128,14 @@ run().catch(console.dir);
 
 
 
-app.get('/',(req,res)=>{
-    res.send('hello world Server is running fine')
+app.get('/', (req, res) => {
+  res.send('hello world Server is running fine')
 })
 
 
 
-app.listen(port,()=>{
-    console.log(`Server is running on port ${port}`)
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`)
 })
 
 
