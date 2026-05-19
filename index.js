@@ -23,6 +23,7 @@ async function run() {
 
     const db = client.db('sports_management')
     const facilitiesCollection = db.collection('sportsFacilities')
+    const bookingCollection = db.collection('bookingList')
 
 
     //  ALL GET API STARTED
@@ -69,7 +70,25 @@ async function run() {
         });
       }
     })
+// post req for add my bookinglist
+app.post('/myBookings',async(req,res)=>{
+  try {
+    const bookingData = req.body
 
+    const result = await bookingCollection.insertOne(bookingData)
+    res.status(201).json({
+      success:true,
+      message:'Facility booked successfully'
+    })
+    
+  } catch (error) {
+    console.log('Error to save my bookings facilities')
+     res.status(500).json({
+          success: false,
+          message: "Internal server error",
+        });
+  }
+})
 
     //  ALL POST API END
     ///------------------------------------------------------------------------
