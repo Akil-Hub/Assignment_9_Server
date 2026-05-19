@@ -72,7 +72,7 @@ const verifyToken = async (req, res, next) => {
 
 
       // get the signle facility by id
-      app.get('/allFacilities/:id', async (req, res) => {
+      app.get('/allFacilities/:id', verifyToken, async (req, res) => {
 
         const { id } = req.params
 
