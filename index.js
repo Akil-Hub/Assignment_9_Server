@@ -35,8 +35,25 @@ async function run() {
     })
 
 
-    // get the signle product by id
+    // get the signle facility by id
     app.get('/allFacilities/:id', async (req, res) => {
+
+      const { id } = req.params
+
+      const result = await facilitiesCollection.findOne({ _id: new ObjectId(id) })
+      res.json(result)
+    })
+
+    // get the owner single facility 
+
+    app.get('/manageFacilities', async (req, res) => {
+
+      const result = await facilitiesCollection.find().toArray()
+      res.json(result)
+    })
+
+    // get the owner single facility 
+    app.get('/manageFacilities/:id', async (req, res) => {
 
       const { id } = req.params
 
@@ -103,9 +120,17 @@ app.post('/myBookings',async(req,res)=>{
 
     //  ALL PATCH API STARTED
 
-    app.get('/allFacilities', async (req, res) => {
+    app.patch('/manageFacilities/:id', async (req, res) => {
 
-      const result = await facilitiesCollection.find().toArray()
+      const {id} = req.params
+
+      const updatedData = req.body
+
+
+      const result = await facilitiesCollection.updateOne(
+        {_id: new ObjectId(id)},
+        {$set:updatedData}
+      )
       res.json(result)
     })
 
