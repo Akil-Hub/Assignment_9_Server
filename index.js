@@ -44,6 +44,13 @@ async function run() {
       res.json(result)
     })
 
+    // Get the facility booking lists
+
+    app.get("/myBookings",async(req,res)=>{
+
+      const result = await bookingCollection.find().toArray()
+      res.json(result)
+    })
 
     //  ALL GET API END
     ///------------------------------------------------------------------------
@@ -110,12 +117,12 @@ app.post('/myBookings',async(req,res)=>{
 
     //  ALL DELETE API STARTED
 
-    app.get('/allFacilities', async (req, res) => {
+app.delete(`/myBookings/:id`,async(req,res)=>{
+  const {id} = req.params
+  const result = await bookingCollection.deleteOne({_id:new ObjectId(id)})
+  res.json(result)
 
-      const result = await facilitiesCollection.find().toArray()
-      res.json(result)
-    })
-
+})
 
     //  ALL DELETE API END
     ///------------------------------------------------------------------------
