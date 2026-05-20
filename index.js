@@ -123,6 +123,12 @@ app.delete(`/myBookings/:id`,async(req,res)=>{
   res.json(result)
 
 })
+app.delete(`/allFacilities/:id`,async(req,res)=>{
+  const {id} = req.params
+  const result = await facilitiesCollection.deleteOne({_id:new ObjectId(id)})
+  res.json(result)
+
+})
 
     //  ALL DELETE API END
     ///------------------------------------------------------------------------
