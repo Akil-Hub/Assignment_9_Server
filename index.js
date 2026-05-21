@@ -29,7 +29,7 @@ const verifyToken = async (req, res, next) => {
   }
 
   const JWKS = createRemoteJWKSet(
-    new URL(`http://localhost:3000/api/auth/jwks`)
+    new URL(`${process.env.CLIENT_URL}/api/auth/jwks`)
   )
 
   const token = authHeader.split(' ')[1]
@@ -54,7 +54,7 @@ const verifyToken = async (req, res, next) => {
   async function run() {
     try {
 
-      await client.connect();
+      // await client.connect();
 
 
       const db = client.db('sports_management')
@@ -194,7 +194,7 @@ const verifyToken = async (req, res, next) => {
 
 
 
-      await client.db("admin").command({ ping: 1 });
+      // await client.db("admin").command({ ping: 1 });
       console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
       // Ensures that the client will close when you finish/error
