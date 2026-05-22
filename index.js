@@ -64,11 +64,28 @@ const verifyToken = async (req, res, next) => {
 
       //  ALL GET API STARTED
 
-      app.get('/allFacilities', async (req, res) => {
 
-        const result = await facilitiesCollection.find().toArray()
-        res.json(result)
-      })
+      app.get('/allFacilities', async (req, res) => {
+  const { search, sport } = req.query
+
+  const query = {}
+
+  if (search) {
+    query.facility_name = { $regex: search, $options: 'i' }
+  }
+
+  if (sport) {
+    query.sports_type = { $in: [sport] }
+  }
+
+  const result = await facilitiesCollection.find(query).toArray()
+  res.json(result)
+})
+      // app.get('/allFacilities', async (req, res) => {
+
+      //   const result = await facilitiesCollection.find().toArray()
+      //   res.json(result)
+      // })
 
 
       // get the signle facility by id
