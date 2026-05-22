@@ -112,27 +112,26 @@ async function run() {
 
     // Get the facility booking lists
 
-app.get("/myBookings", verifyToken, async (req, res) => {
+    app.get("/myBookings", verifyToken, async (req, res) => {
 
-  try {
-    // ✅ get userId from verified token
-    const userId = req.user.sub
+      try {
+        const userId = req.user.sub
 
-    const result = await bookingCollection
-      .find({ userId })
-      .toArray()
+        const result = await bookingCollection
+          .find({ userId })
+          .toArray()
 
-    res.json(result)
+        res.json(result)
 
-  } catch (error) {
-    console.log("Error fetching bookings:", error)
+      } catch (error) {
+        console.log("Error fetching bookings:", error)
 
-    res.status(500).json({
-      success: false,
-      message: "Internal server error"
+        res.status(500).json({
+          success: false,
+          message: "Internal server error"
+        })
+      }
     })
-  }
-})
 
     //  ALL GET API END
     ///------------------------------------------------------------------------
@@ -158,48 +157,44 @@ app.get("/myBookings", verifyToken, async (req, res) => {
       }
     })
     // post req for add my bookinglist
-  app.post('/myBookings', verifyToken, async (req, res) => {
+    app.post('/myBookings', verifyToken, async (req, res) => {
 
-  try {
-    const bookingData = req.body
+      try {
+        const bookingData = req.body
 
-    // ✅ Get user from token (IMPORTANT)
-    const userId = req.user.sub
+        const userId = req.user.sub
 
-    // attach trusted userId (ignore frontend userId completely)
-    bookingData.userId = userId
+        bookingData.userId = userId
 
-    // ❌ prevent duplicate booking
-    const existing = await bookingCollection.findOne({
-      userId: userId,
-      facility_Id: bookingData.facility_Id
+        const existing = await bookingCollection.findOne({
+          userId: userId,
+          facility_Id: bookingData.facility_Id
+        })
+
+        if (existing) {
+          return res.status(400).json({
+            success: false,
+            message: "You already booked this facility"
+          })
+        }
+
+        const result = await bookingCollection.insertOne(bookingData)
+
+        res.status(201).json({
+          success: true,
+          message: 'Facility booked successfully',
+          insertedId: result.insertedId
+        })
+
+      } catch (error) {
+        console.log('Error saving booking:', error)
+
+        res.status(500).json({
+          success: false,
+          message: "Internal server error",
+        })
+      }
     })
-
-    if (existing) {
-      return res.status(400).json({
-        success: false,
-        message: "You already booked this facility"
-      })
-    }
-
-    // ✅ insert booking
-    const result = await bookingCollection.insertOne(bookingData)
-
-    res.status(201).json({
-      success: true,
-      message: 'Facility booked successfully',
-      insertedId: result.insertedId
-    })
-
-  } catch (error) {
-    console.log('Error saving booking:', error)
-
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    })
-  }
-})
 
     //  ALL POST API END
     ///------------------------------------------------------------------------
