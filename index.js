@@ -42,6 +42,10 @@ const verifyToken = async (req, res, next) => {
 
   try {
     const { payload } = await jwtVerify(token, JWKS)
+      req.user = {
+      id: payload.sub,   
+      email: payload.email,
+    };
     console.log(payload)
     next()
   } catch (error) {
@@ -117,8 +121,12 @@ const verifyToken = async (req, res, next) => {
       // Get the facility booking lists
 
       app.get("/myBookings", verifyToken, async (req, res) => {
+const userId = req.user.id;
 
-        const result = await bookingCollection.find().toArray()
+    const result = await bookingCollection
+      .find({ userId })  
+      .toArray();
+      
         res.json(result)
       })
 
@@ -149,8 +157,12 @@ const verifyToken = async (req, res, next) => {
       app.post('/myBookings', async (req, res) => {
         try {
           const bookingData = req.body
-
-          const result = await bookingCollection.insertOne(bookingData)
+ const newBooking = {
+      ...bookingData,
+      userId: req.user.id, // ✅ IMPORTANT LINK
+      createdAt: new Date(),
+    };
+          const result = await bookingCollection.insertOne(newBooking)
           res.status(201).json({
             success: true,
             message: 'Facility booked successfully'
@@ -195,7 +207,11 @@ const verifyToken = async (req, res, next) => {
 
       app.delete(`/myBookings/:id`,verifyToken, async (req, res) => {
         const { id } = req.params
-        const result = await bookingCollection.deleteOne({ _id: new ObjectId(id) })
+
+
+        const result = await bookingCollection.deleteOne({ _id: new ObjectId(id),
+          userId: req.user.id,
+         })
         res.json(result)
 
       })
