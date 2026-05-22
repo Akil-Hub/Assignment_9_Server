@@ -54,7 +54,7 @@ const verifyToken = async (req, res, next) => {
 async function run() {
   try {
 
-    await client.connect();
+    // await client.connect();
 
 
     const db = client.db('sports_management')
@@ -112,10 +112,11 @@ async function run() {
 
     // Get the facility booking lists
 
-    app.get("/myBookings", async (req, res) => {
+    app.get("/myBookings", verifyToken, async (req, res) => {
 
+      const userId = req.headers.userId
 
-      const result = await bookingCollection.find().toArray()
+      const result = await bookingCollection.find({ userId }).toArray()
       res.json(result)
     })
 
@@ -149,16 +150,7 @@ async function run() {
       try {
         const bookingData = req.body
 
-  const existing = await bookingCollection.findOne({
-      userId: bookingData.userId,
-      facility_Id: bookingData.facility_Id
-    })
-    if (existing) {
-      return res.status(400).json({
-        success: false,
-        message: "You already booked this facility"
-      })
-    }
+
         const result = await bookingCollection.insertOne(bookingData)
         res.status(201).json({
           success: true,
